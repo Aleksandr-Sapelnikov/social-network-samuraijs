@@ -1,0 +1,50 @@
+.userContainer {
+    padding: 15px;
+}
+
+.oneUser {
+    display: flex;
+    max-width: 40%;
+    align-items: center;
+    border: aquamarine solid 1px;
+    border-radius: 5px;
+    background-color: #54acac;
+    justify-content: space-between;
+}
+
+.userLeft {
+    padding: 5px;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    width: 20%;
+}
+
+.userRight {
+    display: flex;
+    padding-left: 10px;
+    width: 80%;
+    gap: 30%
+}
+
+.userPhoto {
+    width: 60px;
+    height: 60px;
+    border-radius: 30%;
+}
+
+.oneUser:not(:last-child) {
+    margin-bottom: 10px;
+}
+
+.userLocation {
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+}
+
+.userInfo {
+    display: inline-flex;
+    flex-direction: column;
+}
+
