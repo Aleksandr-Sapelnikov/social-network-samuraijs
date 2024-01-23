@@ -4,7 +4,7 @@
 
 .oneUser {
     display: flex;
-    max-width: 40%;
+    width: 50%;
     align-items: center;
     border: aquamarine solid 1px;
     border-radius: 5px;
@@ -23,8 +23,8 @@
 .userRight {
     display: flex;
     padding-left: 10px;
+    flex-grow: 1;
     width: 80%;
-    gap: 30%
 }
 
 .userPhoto {
@@ -40,7 +40,9 @@
 .userLocation {
     display: flex;
     flex-direction: column;
+    margin-left: auto;
     padding-left: 20px;
+    padding-right: 5px;
 }
 
 .userInfo {
