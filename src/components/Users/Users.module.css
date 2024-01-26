@@ -2,6 +2,10 @@
     padding: 15px;
 }
 
+.selectedPage {
+    font-weight: bold;
+}
+
 .oneUser {
     display: flex;
     width: 50%;
