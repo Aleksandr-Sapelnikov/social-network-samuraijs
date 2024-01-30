@@ -9,30 +9,27 @@ import {
     unfollow
 } from "../../redux/users-reducer";
 import React from "react";
-import axios from "axios";
-
 import Preloader from "../common/Preloader/Preloader";
+import {usersAPI} from "../../api/api";
 
 
 class UsersContainer extends React.Component {
 
     componentDidMount() { // (вмантирование), метод, где нужно делать все side эффекты
         this.props.toggleIsFetching(true) // показывает значек загрузки
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${this.props.currentPage}&count=${this.props.pageSize}`)
-            .then(response => {
-                this.props.setUsers(response.data.items);
-                this.props.setTotalUsersCount(response.data.totalCount);
-                this.props.toggleIsFetching(false)
 
+        usersAPI.getUsers(this.props.currentPage, this.props.pageSize).then(data => {
+                this.props.setUsers(data.items);
+                this.props.setTotalUsersCount(data.totalCount);
+                this.props.toggleIsFetching(false)
             })
     }
 
     onPageChanged = (pageNumber) => {
         this.props.setCurrentPage(pageNumber);
         this.props.toggleIsFetching(true)
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${pageNumber}&count=${this.props.pageSize}`)
-            .then(response => {
-                this.props.setUsers(response.data.items);
+        usersAPI.getUsers(this.props.currentPage, this.props.pageSize).then(data => {
+                this.props.setUsers(data.items);
                 this.props.toggleIsFetching(false)
             })
     }
