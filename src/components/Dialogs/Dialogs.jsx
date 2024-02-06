@@ -3,6 +3,7 @@ import s from './Dialogs.module.css';
 import DialogItem from "./DialogItem/Dialogitem";
 import Message from "./Message/Message";
 
+// в React Router Dom V6 нет Redirect, вместо его <Navigate to="/login"/>;
 
 const Dialogs = (props) => {
 
