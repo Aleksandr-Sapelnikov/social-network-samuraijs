@@ -8,7 +8,9 @@ const Header = (props) => {
             src='https://img.freepik.com/free-vector/flat-design-atheism-logo-template_23-2149248384.jpg?w=1380&t=st=1704185422~exp=1704186022~hmac=9599356f0cad84ef8b1fc7b19fbd4b5dc6a20c6873cdd02e3dbe03c8194ab361'
             alt={'logo'}/>
         <div className={s.loginBlock}>
-            { props.isAuth ? props.login : <NavLink to={'/login'}>Login</NavLink> }
+            { props.isAuth
+                ? <div>{props.login}  <button onClick={props.logout}>Log out</button> </div>
+                : <NavLink to={'/login'}>Login</NavLink> }
         </div>
     </header>
 }

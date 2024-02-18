@@ -2,31 +2,45 @@ import React from "react";
 import Profile from "./Profile";
 import {connect} from "react-redux";
 import {getStatus, getUserProfile, updateStatus} from "../../redux/profile-reducer";
-import {useParams} from 'react-router-dom'
+import {Navigate, useParams} from 'react-router-dom'
 import {compose} from "redux";
+import { useNavigate } from "react-router-dom";
 
 // withRouter отсутствует в react router 6, поэтому есть такой кастыль
 export function withRouter(Children){
     return(props)=>{
 
         const match  = {params: useParams()};
-        return <Children {...props}  match = {match}/>
+
+        return <Children {...props}  match = {match} />
     }
 }
 
 class ProfileContainer extends React.Component {
 
     componentDidMount() {
+
         let userId = this.props.match.params.userId;
         if (!userId) {
-            userId = 30712;
+            if (!userId) {
+                userId = this.props.authorizedUserId;
+                if (userId) {
+                    // this.props.history.push("/login");
+                    this.props.getUserProfile(userId)
+                    this.props.getStatus(userId)
+                    //Делаю запросы, только если есть авторизация, иначе ошибка 400 от сервера, т.к. userId = null
+                }
+            }
         }
-        this.props.getUserProfile(userId)
-        this.props.getStatus(userId)
+
     }
 
     render() {
+        if (!this.props.authorizedUserId) {
+            return <Navigate to={"/login"} />
+        }
         return (
+
             <div>
                 <Profile {...this.props} profile={this.props.profile} status={this.props.status}
                          updateStatus={this.props.updateStatus} />
@@ -38,7 +52,9 @@ class ProfileContainer extends React.Component {
 let mapStateToProps = (state) => {
     return {
         profile: state.profilePage.profile,
-        status: state.profilePage.status
+        status: state.profilePage.status,
+        authorizedUserId: state.auth.userId,
+        isAuth: state.auth.isAuth
     }
 }
 
