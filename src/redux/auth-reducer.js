@@ -42,7 +42,7 @@ export const login = (email, password, rememberMe, setStatus) => (dispatch) => {
             if (response.data.resultCode === 0) {
                 dispatch(getAuthUserData())
             } else {
-                setStatus({error: response.data.messages})
+                setStatus(response.data.messages)
             }
         });
 }
