@@ -1,16 +1,22 @@
-import React from 'react';
+import React, {lazy} from 'react';
 import './App.css';
 import Navbar from './components/Navbar/Navbar';
 import {Route, Routes, useParams} from "react-router-dom";
-import DialogsContainer from "./components/Dialogs/DialogsContainer";
-import UsersContainer from "./components/Users/UsersContainer";
-import ProfileContainer from "./components/Profile/ProfileContainer";
+// import DialogsContainer from "./components/Dialogs/DialogsContainer";
+// import UsersContainer from "./components/Users/UsersContainer";
+// import ProfileContainer from "./components/Profile/ProfileContainer";
 import HeaderContainer from "./components/Header/HeaderContainer";
-import LoginPage from "./components/Login/Login";
+// import LoginPage from "./components/Login/Login";
 import Preloader from "./components/common/Preloader/Preloader";
 import {initializeApp} from "./redux/app-reducer";
 import {compose} from "redux";
 import {connect} from "react-redux";
+
+const DialogsContainer = lazy(() => import("./components/Dialogs/DialogsContainer"));
+const UsersContainer = lazy(() => import("./components/Users/UsersContainer"));
+const ProfileContainer = lazy(() => import("./components/Profile/ProfileContainer"));
+const LoginPage = lazy(() => import("./components/Login/Login"));
+
 
 // withRouter отсутствует в react router 6, поэтому есть такой кастыль
 export function withRouter(Children){
@@ -35,6 +41,7 @@ class App extends React.Component {
                 <HeaderContainer/>
                 <Navbar/>
                 <div className='app-wrapper-content'>
+                    <React.Suspense fallback={<Preloader/>}>
                     <Routes>
                         <Route path='/dialogs' element={<DialogsContainer/>}/>
 
@@ -46,6 +53,7 @@ class App extends React.Component {
 
                         <Route path='/login' element={<LoginPage/>}/>
                     </Routes>
+                    </React.Suspense>
                 </div>
             </div>
         )

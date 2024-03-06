@@ -1,7 +1,7 @@
 import React from "react";
 import Profile from "./Profile";
 import {connect} from "react-redux";
-import {getStatus, getUserProfile, updateStatus} from "../../redux/profile-reducer";
+import {getStatus, getUserProfile, savePhoto, saveProfile, updateStatus} from "../../redux/profile-reducer";
 import {Navigate, useParams} from 'react-router-dom'
 import {compose} from "redux";
 import { useNavigate } from "react-router-dom";
@@ -17,9 +17,7 @@ export function withRouter(Children){
 }
 
 class ProfileContainer extends React.Component {
-
-    componentDidMount() {
-
+    refreshProfile() {
         let userId = this.props.match.params.userId;
         if (!userId) {
             if (!userId) {
@@ -32,8 +30,19 @@ class ProfileContainer extends React.Component {
                 }
             }
         }
-
     }
+
+    componentDidMount() {
+        this.refreshProfile();
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.match.params.userId !== prevProps.match.params.userId ) {
+            // если id не равны, то прошлый раз показали другого пользователя и надо перерисовать
+            this.refreshProfile();
+        }
+    }
+
 
     render() {
         if (!this.props.authorizedUserId) {
@@ -42,8 +51,13 @@ class ProfileContainer extends React.Component {
         return (
 
             <div>
-                <Profile {...this.props} profile={this.props.profile} status={this.props.status}
-                         updateStatus={this.props.updateStatus} />
+                <Profile {...this.props}
+                         isOwner={!this.props.match.params.userId}//если нет id, то я owner
+                         profile={this.props.profile}
+                         status={this.props.status}
+                         updateStatus={this.props.updateStatus}
+                         updateError={this.props.updateError}
+                         savePhoto={this.props.savePhoto}/>
             </div>
         )
     }
@@ -54,11 +68,12 @@ let mapStateToProps = (state) => {
         profile: state.profilePage.profile,
         status: state.profilePage.status,
         authorizedUserId: state.auth.userId,
-        isAuth: state.auth.isAuth
+        isAuth: state.auth.isAuth,
+        updateError: state.profilePage.updateError
     }
 }
 
 export default compose(
-    connect(mapStateToProps, {getUserProfile, getStatus, updateStatus}),
+    connect(mapStateToProps, {getUserProfile, getStatus, updateStatus, savePhoto, saveProfile}),
     withRouter
 )(ProfileContainer);

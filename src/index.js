@@ -7,14 +7,15 @@ import App from './App';
 import {BrowserRouter} from "react-router-dom";
 import {Provider} from "react-redux";
 
+const root = ReactDOM.createRoot(document.getElementById("root"));
 let rerenderEntireTree = (state) => {
 
-    ReactDOM.render(
+    root.render(
         <BrowserRouter>
             <Provider store={store}>
             <App  />
             </Provider>
-        </BrowserRouter>, document.getElementById('root'));
+        </BrowserRouter>);
 }
 
 rerenderEntireTree(store.getState());

@@ -10,12 +10,13 @@ const LoginForm = (props) => {
     const dispatch = useDispatch()
 
     const isAuth = useSelector((state) => state.auth.isAuth)
+    const captchaUrl = useSelector((state) => state.auth.captchaUrl)
 
     if (isAuth) {
         return <Navigate to={"/profile"} />
     }
     const submit = (values, submitProps) => {
-        dispatch(login(values.email, values.password, values.rememberMe, submitProps.setStatus))
+        dispatch(login(values.email, values.password, values.rememberMe, values.captcha, submitProps.setStatus, submitProps.setSubmitting))
 
     }
 
@@ -24,7 +25,8 @@ const LoginForm = (props) => {
             initialValues={{
                 email: '',
                 password: '',
-                rememberMe: false
+                rememberMe: false,
+                captcha: null
             }}
             validate={values => {
                 const errors = {};
@@ -39,6 +41,12 @@ const LoginForm = (props) => {
                 if (!values.password) {
                     errors.password = 'Required';
                 }
+
+                if (captchaUrl) {
+                    if (!values.captcha) {
+                        errors.captcha = 'Required';
+                    }
+                }
                 return errors;
             }}
             onSubmit={submit}
@@ -49,6 +57,7 @@ const LoginForm = (props) => {
                         <div>
                             <Field type="email" name="email" placeholder="email"/>
                             <ErrorMessage name="email" component="div"/>
+                            
                         </div>
                         <div>
                             <Field type="password" name="password" placeholder="password"/>
@@ -57,9 +66,18 @@ const LoginForm = (props) => {
                         <div>
                             <Field component={"input"} name={"rememberMe"} type={"checkbox"}/> remember me
                         </div>
+
+                        { captchaUrl && <img alt={'Ошибка загрузки капчи'} src={captchaUrl} />}
+                        { captchaUrl &&
+                            <div>
+                            <Field type="text" name="captcha" placeholder="Символы с картинки"/>
+                            <ErrorMessage name="captcha" component="div"/>
+                        </div>
+                        }
+
                         <div>
                             <button type="submit" disabled={isSubmitting}>
-                                Submit
+                                Login
                             </button>
                         </div>
                         <p>{status}</p>
