@@ -8,9 +8,10 @@ import {Route, Routes, useParams} from "react-router-dom";
 import HeaderContainer from "./components/Header/HeaderContainer";
 // import LoginPage from "./components/Login/Login";
 import Preloader from "./components/common/Preloader/Preloader";
-import {initializeApp} from "./redux/app-reducer";
+
 import {compose} from "redux";
 import {connect} from "react-redux";
+import {initializeApp} from "./redux/app-reducer.ts";
 
 const DialogsContainer = lazy(() => import("./components/Dialogs/DialogsContainer"));
 const UsersContainer = lazy(() => import("./components/Users/UsersContainer"));

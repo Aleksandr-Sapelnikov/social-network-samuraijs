@@ -1,8 +1,8 @@
 import React from "react";
 import {Formik, Form, Field, ErrorMessage} from 'formik';
 import {useDispatch, useSelector} from "react-redux";
-import {login} from "../../redux/auth-reducer";
 import {Navigate} from "react-router-dom";
+import {login} from "../../redux/auth-reducer.ts";
 
 
 const LoginForm = (props) => {

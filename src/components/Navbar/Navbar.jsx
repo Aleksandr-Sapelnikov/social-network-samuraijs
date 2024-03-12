@@ -2,17 +2,20 @@ import React from 'react';
 import s from './Navbar.module.css';
 import {NavLink} from "react-router-dom";
 
+
+const setActiveClass = ({isActive}) => isActive ? s.activeLink : "";
+
 const Navbar = () => {
     return (
         <nav className={s.nav}>
             <div className={s.item}>
-                <NavLink to="/profile" activeClassName={s.activeLink}>Profile</NavLink>
-            </div>
-            <div className={`${s.item} ${s.active}`}>
-                <NavLink to="/dialogs" activeClassName={s.activeLink}>Messages</NavLink>
+                <NavLink to="/profile" className={setActiveClass}>Profile</NavLink>
             </div>
             <div className={s.item}>
-                <NavLink to="/users" activeClassName={s.activeLink}>Users</NavLink>
+                <NavLink to="/dialogs" className={setActiveClass}>Messages</NavLink>
+            </div>
+            <div className={s.item}>
+                <NavLink to="/users" className={setActiveClass}>Users</NavLink>
             </div>
             <div className={s.item}>
                 <a>Music</a>

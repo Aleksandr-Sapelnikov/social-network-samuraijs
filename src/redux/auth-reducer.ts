@@ -5,14 +5,16 @@ const GET_CAPTCHA_URL_SUCCESS = 'GET_CAPTCHA_URL_SUCCESS';
 
 
 let initialState = {
-    userId: null,
-    email: null,
-    login: null,
+    userId: null as number | null,
+    email: null as string | null,
+    login: null as string | null,
     isAuth: false,
-    captchaUrl: null // если null, то капча не обязательна
+    captchaUrl: null as string | null // если null, то капча не обязательна
 };
 
-const authReducer = (state = initialState, action) => {
+export type initialStateType = typeof initialState;
+
+const authReducer = (state = initialState, action): initialStateType => {
     switch(action.type) {
         case SET_USER_DATA:
         case GET_CAPTCHA_URL_SUCCESS:
@@ -25,11 +27,27 @@ const authReducer = (state = initialState, action) => {
             return state;
     }
 }
+type SetAuthUserDataActionPayloadType = {
+    userId: number | null,
+    email: string | null,
+    login: string | null,
+    isAuth: boolean
+}
 
-export const setAuthUserData = (userId, email, login, isAuth) => ({type: SET_USER_DATA, payload:
+type SetAuthUserDataActionType = {
+    type: typeof SET_USER_DATA,
+    payload: SetAuthUserDataActionPayloadType
+}
+export const setAuthUserData = (userId: number | null, email: string | null, login: string | null, isAuth: boolean): SetAuthUserDataActionType => ({
+    type: SET_USER_DATA, payload:
         {userId, email, login, isAuth}  });
 
-export const getCaptchaUrlSuccess = (captchaUrl) => ({
+type getCaptchaUrlSuccessActionType = {
+    type: typeof GET_CAPTCHA_URL_SUCCESS,
+    payload: {captchaUrl: string}
+}
+
+export const getCaptchaUrlSuccess = (captchaUrl): getCaptchaUrlSuccessActionType => ({
     type: GET_CAPTCHA_URL_SUCCESS, payload: {captchaUrl}
 });
 
@@ -43,7 +61,7 @@ export const getAuthUserData = () => (dispatch) => {
     })
 }
 
-export const login = (email, password, rememberMe, captcha, setStatus, setSubmitting) => (dispatch) => {
+export const login = (email:string, password:string, rememberMe:boolean, captcha:string, setStatus, setSubmitting) => (dispatch) => {
     authAPI.login(email, password, rememberMe, captcha)
         .then(response => {
             if (response.data.resultCode === 0) {
