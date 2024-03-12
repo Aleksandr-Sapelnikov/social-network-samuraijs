@@ -1,4 +1,5 @@
 import {profileAPI, usersAPI} from "../api/api";
+import {photosType, postType, profileType} from "../types/types";
 
 const ADD_POST = 'ADD-POST';
 const UPDATE_NEW_POST_TEXT = 'UPDATE-NEW-POST-TEXT';
@@ -7,20 +8,24 @@ const SET_STATUS = 'SET_STATUS';
 const SET_ERROR_MESSAGE = 'SET_ERROR_MESSAGE';
 const SAVE_PHOTO_SUCCESS = 'SAVE_PHOTO_SUCCESS';
 
+
+
 let initialState = {
     posts: [
         {id: 1, message: 'Hi, how are you?', likesCount: 12},
         {id: 2, message: 'It\'s my first post', likesCount: 11},
         {id: 3, message: 'Blabla', likesCount: 11},
         {id: 4, message: 'Dada', likesCount: 11}
-    ],
+    ] as Array<postType>,
     newPostText: 'Привет, тут надо переделать формы',
-    profile: null,
+    profile: null as profileType | null,
     status: "",
     updateError: false
 };
 
-const profileReducer = (state = initialState, action) => {
+export type initialStateType = typeof initialState
+
+const profileReducer = (state = initialState, action): initialStateType => {
     switch (action.type) {
         case ADD_POST:
             let newPost = {
@@ -54,13 +59,35 @@ const profileReducer = (state = initialState, action) => {
     }
 }
 
+type addPostActionCreatorActionType = {type: typeof ADD_POST}
+export const addPostActionCreator = (): addPostActionCreatorActionType => ({type: ADD_POST})
 
-export const addPostActionCreator = () => ({type: ADD_POST})
-export const setErrorMessage = (updateError) => ({type: SET_ERROR_MESSAGE, updateError})
-export const setUserProfile = (profile) => ({type: SET_USER_PROFILE, profile})
-export const setUserStatus = status => ({type: SET_STATUS, status})
-export const updateNewPostTextActionCreator = (text) => ({type: UPDATE_NEW_POST_TEXT, newText: text})
-export const savePhotoSuccess = (photos) => ({type: SAVE_PHOTO_SUCCESS, photos})
+type setErrorMessageActionType = {
+    type: typeof SET_ERROR_MESSAGE,
+    updateError: boolean
+}
+export const setErrorMessage = (updateError: boolean): setErrorMessageActionType => ({type: SET_ERROR_MESSAGE, updateError})
+
+type setUserProfileActionType = {
+    type: typeof SET_USER_PROFILE,
+    profile: profileType
+}
+export const setUserProfile = (profile: profileType): setUserProfileActionType => ({type: SET_USER_PROFILE, profile})
+type setUserStatusActionType = {
+    type: typeof SET_STATUS,
+    status: string
+}
+export const setUserStatus = (status: string) : setUserStatusActionType => ({type: SET_STATUS, status})
+type updateNewPostTextActionCreatorActionType = {
+    type: typeof UPDATE_NEW_POST_TEXT,
+    newText: string
+}
+export const updateNewPostTextActionCreator = (text: string): updateNewPostTextActionCreatorActionType => ({type: UPDATE_NEW_POST_TEXT, newText: text})
+type savePhotoSuccessActionType = {
+    type: typeof SAVE_PHOTO_SUCCESS,
+    photos: photosType
+}
+export const savePhotoSuccess = (photos: photosType): savePhotoSuccessActionType => ({type: SAVE_PHOTO_SUCCESS, photos})
 
 export const getUserProfile = (userId) => (dispatch) => {
     usersAPI.getProfile(userId).then(response => {
@@ -68,13 +95,13 @@ export const getUserProfile = (userId) => (dispatch) => {
     })
 }
 
-export const getStatus = (userId) => (dispatch) => {
+export const getStatus = (userId: number) => (dispatch) => {
     profileAPI.getStatus(userId).then(response => {
         dispatch(setUserStatus(response.data));
     })
 }
 
-export const updateStatus = (status) => (dispatch) => {
+export const updateStatus = (status: string) => (dispatch) => {
     profileAPI.updateStatus(status)
         .then(response => {
             if (response.data.resultCode === 0) {
@@ -91,7 +118,7 @@ export const savePhoto = (file) => async (dispatch) => {
     }
 }
 
-export const saveProfile = (profile, setStatus) => async (dispatch, getState) => {
+export const saveProfile = (profile: profileType, setStatus) => async (dispatch, getState) => {
     const userId = getState().auth.userId;
     const response = await profileAPI.saveProfile(profile);
 

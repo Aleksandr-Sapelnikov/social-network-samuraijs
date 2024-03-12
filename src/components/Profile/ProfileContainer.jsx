@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {getStatus, getUserProfile, savePhoto, saveProfile, updateStatus} from "../../redux/profile-reducer.ts";
 import {Navigate, useParams} from 'react-router-dom'
 import {compose} from "redux";
-import { useNavigate } from "react-router-dom";
+
 
 // withRouter отсутствует в react router 6, поэтому есть такой кастыль
 export function withRouter(Children){
