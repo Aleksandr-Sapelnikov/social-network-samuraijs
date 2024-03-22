@@ -1,17 +1,38 @@
 import {connect} from "react-redux";
-import Users from "./Users"
+import Users from "./Users.tsx"
 import {
-    follow, getUsers,
-    setCurrentPage,
-    toggleFollowingInProgress,
+    follow,
+    requestUsers,
     unfollow
 } from "../../redux/users-reducer.ts";
 import React from "react";
 import Preloader from "../common/Preloader/Preloader";
+import {UserType} from "../../types/types";
+import {AppStateType} from "../../redux/redux-store";
 
+type MapStatePropsType = {
+    currentPage: number
+    pageSize: number
+    isFetching: boolean
+    totalUsersCount: number
+    users: Array<UserType>
+    followingInProgress: Array<number>
+}
 
+type MapDispatchPropsType = {
+    follow: (userId: number) => void
+    unfollow: (userId: number) => void
+    setCurrentPage
+    getUsers: (currentPage: number, pageSize: number) => void
+}
 
-class UsersContainer extends React.Component {
+type OwnPropsType = {
+    pageTitle: string
+}
+
+type PropsType = MapStatePropsType & MapDispatchPropsType & OwnPropsType
+
+class UsersContainer extends React.Component<PropsType, {}> {
 
     componentDidMount() { // (вмантирование), метод, где нужно делать все side эффекты
         this.props.getUsers(this.props.currentPage, this.props.pageSize); //сюда попадает колбэк,
@@ -38,7 +59,7 @@ class UsersContainer extends React.Component {
     }
 }
 
-let mapStateToProps = (state) => {
+let mapStateToProps = (state: AppStateType) => {
     return {
         users: state.usersPage.users, //userPage береться из redux-store, т.к зарегестрироавли такой редюсер
         pageSize: state.usersPage.pageSize,
@@ -74,6 +95,6 @@ let mapStateToProps = (state) => {
 
 // " ...если вы передаете в connect вторым аргументом не mapDispatchToProps, а объект с AC,
 // то connect оборачивает ваши AC в функцию-обертку () => store.dispatch(AC) и передаёт в props компонента."
-export default connect(mapStateToProps,
-    {follow, unfollow, setCurrentPage,
-        toggleFollowingInProgress, getUsers})(UsersContainer)
+// TStateProps = {}, TDispatchProps = {}, TOwnProps = {}, State = DefaultRootState
+export default connect<MapStatePropsType, MapDispatchPropsType, OwnPropsType, AppStateType>(mapStateToProps,
+    {follow, unfollow, getUsers: requestUsers})(UsersContainer)

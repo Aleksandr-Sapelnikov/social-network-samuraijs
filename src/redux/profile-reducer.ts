@@ -1,5 +1,5 @@
-import {profileAPI, usersAPI} from "../api/api";
-import {photosType, postType, profileType} from "../types/types";
+import {PhotosType, PostType, ProfileType} from "../types/types";
+import {profileAPI} from "../api/profile-api.ts";
 
 const ADD_POST = 'ADD-POST';
 const UPDATE_NEW_POST_TEXT = 'UPDATE-NEW-POST-TEXT';
@@ -16,9 +16,9 @@ let initialState = {
         {id: 2, message: 'It\'s my first post', likesCount: 11},
         {id: 3, message: 'Blabla', likesCount: 11},
         {id: 4, message: 'Dada', likesCount: 11}
-    ] as Array<postType>,
+    ] as Array<PostType>,
     newPostText: 'Привет, тут надо переделать формы',
-    profile: null as profileType | null,
+    profile: null as ProfileType | null,
     status: "",
     updateError: false
 };
@@ -70,9 +70,9 @@ export const setErrorMessage = (updateError: boolean): setErrorMessageActionType
 
 type setUserProfileActionType = {
     type: typeof SET_USER_PROFILE,
-    profile: profileType
+    profile: ProfileType
 }
-export const setUserProfile = (profile: profileType): setUserProfileActionType => ({type: SET_USER_PROFILE, profile})
+export const setUserProfile = (profile: ProfileType): setUserProfileActionType => ({type: SET_USER_PROFILE, profile})
 type setUserStatusActionType = {
     type: typeof SET_STATUS,
     status: string
@@ -85,51 +85,48 @@ type updateNewPostTextActionCreatorActionType = {
 export const updateNewPostTextActionCreator = (text: string): updateNewPostTextActionCreatorActionType => ({type: UPDATE_NEW_POST_TEXT, newText: text})
 type savePhotoSuccessActionType = {
     type: typeof SAVE_PHOTO_SUCCESS,
-    photos: photosType
+    photos: PhotosType
 }
-export const savePhotoSuccess = (photos: photosType): savePhotoSuccessActionType => ({type: SAVE_PHOTO_SUCCESS, photos})
+export const savePhotoSuccess = (photos: PhotosType): savePhotoSuccessActionType => ({type: SAVE_PHOTO_SUCCESS, photos})
 
-export const getUserProfile = (userId) => (dispatch) => {
-    usersAPI.getProfile(userId).then(response => {
-        dispatch(setUserProfile(response.data));
-    })
-}
-
-export const getStatus = (userId: number) => (dispatch) => {
-    profileAPI.getStatus(userId).then(response => {
-        dispatch(setUserStatus(response.data));
-    })
+export const getUserProfile = (userId: number) => async (dispatch) => {
+    const data = await profileAPI.getProfile(userId)
+        dispatch(setUserProfile(data))
 }
 
-export const updateStatus = (status: string) => (dispatch) => {
-    profileAPI.updateStatus(status)
-        .then(response => {
-            if (response.data.resultCode === 0) {
-                dispatch(setUserStatus(status));
-            }
-        });
+export const getStatus = (userId: number) => async (dispatch) => {
+    const data = await profileAPI.getStatus(userId)
+        dispatch(setUserStatus(data))
+}
+
+export const updateStatus = (status: string) => async (dispatch) => {
+    const data = await profileAPI.updateStatus(status)
+    if (data.resultCode === 0) {
+        dispatch(setUserStatus(status));
+    }
+
 }
 
 export const savePhoto = (file) => async (dispatch) => {
-    let response = await profileAPI.savePhoto(file);
+    let data = await profileAPI.savePhoto(file);
 
-    if (response.data.resultCode === 0) {
-        dispatch(savePhotoSuccess(response.data.data.photos));
+    if (data.resultCode === 0) {
+        dispatch(savePhotoSuccess(data.data.photos));
     }
 }
 
-export const saveProfile = (profile: profileType, setStatus) => async (dispatch, getState) => {
+export const saveProfile = (profile: ProfileType, setStatus) => async (dispatch, getState) => {
     const userId = getState().auth.userId;
-    const response = await profileAPI.saveProfile(profile);
+    const data = await profileAPI.saveProfile(profile);
 
-    if (response.data.resultCode === 0) {
+    if (data.resultCode === 0) {
         dispatch(getUserProfile(userId));
         dispatch(setErrorMessage(false))
     } else {
-        setStatus(response.data.messages[0]);
+        setStatus(data.messages[0]);
         dispatch(setErrorMessage(true)) //не получилось через состояния,
         // т.к. state не сразу меняется и форма закрывается даже с ошибкой
-        return Promise.reject(response.data.messages[0]);
+        return Promise.reject(data.messages[0]);
     }
 }
 

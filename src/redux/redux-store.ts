@@ -7,7 +7,7 @@ import authReducer from "./auth-reducer.ts";
 import { thunk } from "redux-thunk"
 import appReducer from "./app-reducer.ts";
 
-let reducers = combineReducers({
+let rootReducer = combineReducers({
     profilePage: profileReducer,
     dialogsPage: dialogsReducer,
     sidebar: sidebarReducer,
@@ -16,13 +16,20 @@ let reducers = combineReducers({
     app: appReducer
 });
 
+type RootReducerType = typeof rootReducer; // (globalstate: AppStateType) => AppStateType
+export type AppStateType = ReturnType<RootReducerType>
+
+type PropertiesTypes<T> = T extends {[key: string]: infer U} ? U : never
+export type InferActionsTypes<T extends {[key: string]: (...args: any[])=>any}> = ReturnType<PropertiesTypes<T>>
+
+// @ts-ignore
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(reducers, /* preloadedState, */ composeEnhancers(
+const store = createStore(rootReducer, /* preloadedState, */ composeEnhancers(
     applyMiddleware(thunk)
 ));
 
-// let store = createStore(reducers, applyMiddleware(thunk));
-
+// let store = createStore(rootReducer, applyMiddleware(thunk));
+// @ts-ignore
 window.__store__= store
 
 export default store;

@@ -1,4 +1,6 @@
-import {authAPI, securityAPI} from "../api/api";
+import {ResultCodeForCaptcha, ResultCodesEnum} from "../api/api.ts";
+import {authAPI} from "../api/auth-api.ts";
+import {securityAPI} from "../api/security-api.ts";
 
 const SET_USER_DATA = 'SET_USER_DATA';
 const GET_CAPTCHA_URL_SUCCESS = 'GET_CAPTCHA_URL_SUCCESS';
@@ -34,6 +36,7 @@ type SetAuthUserDataActionPayloadType = {
     isAuth: boolean
 }
 
+
 type SetAuthUserDataActionType = {
     type: typeof SET_USER_DATA,
     payload: SetAuthUserDataActionPayloadType
@@ -51,34 +54,33 @@ export const getCaptchaUrlSuccess = (captchaUrl): getCaptchaUrlSuccessActionType
     type: GET_CAPTCHA_URL_SUCCESS, payload: {captchaUrl}
 });
 
-export const getAuthUserData = () => (dispatch) => {
+export const getAuthUserData = () => async (dispatch) => {
     //промисы возвращают промисы, then возвращает промис, если пишем return, то вернет наружу (см. в app-reducer)
-    return authAPI.me().then(response => {
-        if (response.data.resultCode === 0) {
-            let {id, login, email} = response.data.data;
-            dispatch(setAuthUserData(id, email, login, true)); //важно соблюсти очередность, как в редюсере
-        }
-    })
+    let meData = await authAPI.me();
+
+    if (meData.resultCode === ResultCodesEnum.Success) {
+        let {id, login, email} = meData.data;
+        dispatch(setAuthUserData(id, email, login, true));
+    }
 }
 
-export const login = (email:string, password:string, rememberMe:boolean, captcha:string, setStatus, setSubmitting) => (dispatch) => {
-    authAPI.login(email, password, rememberMe, captcha)
-        .then(response => {
-            if (response.data.resultCode === 0) {
-                dispatch(getAuthUserData())
-            } else {
-                if (response.data.resultCode === 10) {
-                dispatch(getCaptchaUrl());
-            }
-                setStatus(response.data.messages)
+export const login = (email:string, password:string, rememberMe:boolean, captcha:string, setStatus, setSubmitting) => async (dispatch) => {
+    let data = await authAPI.login(email, password, rememberMe, captcha);
+    if (data.resultCode === ResultCodesEnum.Success) {
+        // success, get auth data
+        dispatch(getAuthUserData())
+    } else {
+        if (data.resultCode === ResultCodeForCaptcha.CaptchaIsRequired) {
+            dispatch(getCaptchaUrl());
+        }
+                setStatus(data.messages)
                 setSubmitting(false)
             }
-        });
 }
 
 export const getCaptchaUrl = () => async (dispatch) => {
-    const response = await securityAPI.getCaptchaUrl();
-    const captchaUrl = response.data.url;
+    const data = await securityAPI.getCaptchaUrl();
+    const captchaUrl = data.url;
     dispatch(getCaptchaUrlSuccess(captchaUrl));
 }
 

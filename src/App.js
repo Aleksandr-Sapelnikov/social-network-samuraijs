@@ -14,7 +14,7 @@ import {connect} from "react-redux";
 import {initializeApp} from "./redux/app-reducer.ts";
 
 const DialogsContainer = lazy(() => import("./components/Dialogs/DialogsContainer"));
-const UsersContainer = lazy(() => import("./components/Users/UsersContainer"));
+const UsersContainer = lazy(() => import("./components/Users/UsersContainer.tsx"));
 const ProfileContainer = lazy(() => import("./components/Profile/ProfileContainer"));
 const LoginPage = lazy(() => import("./components/Login/Login"));
 
