@@ -1,22 +1,23 @@
 import React, {lazy} from 'react';
 import './App.css';
-import Navbar from './components/Navbar/Navbar';
+import Navbar from './components/Navbar/Navbar.tsx';
 import {Route, Routes, useParams} from "react-router-dom";
 // import DialogsContainer from "./components/Dialogs/DialogsContainer";
 // import UsersContainer from "./components/Users/UsersContainer";
-// import ProfileContainer from "./components/Profile/ProfileContainer";
-import HeaderContainer from "./components/Header/HeaderContainer";
+import ProfileContainer from "./components/Profile/ProfileContainer.tsx";
+import HeaderContainer from "./components/Header/HeaderContainer.tsx";
 // import LoginPage from "./components/Login/Login";
-import Preloader from "./components/common/Preloader/Preloader";
+import Preloader from "./components/common/Preloader/Preloader.tsx";
 
 import {compose} from "redux";
 import {connect} from "react-redux";
 import {initializeApp} from "./redux/app-reducer.ts";
+import {AppStateType} from "./redux/redux-store";
 
-const DialogsContainer = lazy(() => import("./components/Dialogs/DialogsContainer"));
+const DialogsContainer = lazy(() => import("./components/Dialogs/DialogsContainer.tsx"));
 const UsersContainer = lazy(() => import("./components/Users/UsersContainer.tsx"));
-const ProfileContainer = lazy(() => import("./components/Profile/ProfileContainer"));
-const LoginPage = lazy(() => import("./components/Login/Login"));
+// const ProfileContainer = lazy(() => import("./components/Profile/ProfileContainer.tsx"));
+const LoginPage = lazy(() => import("./components/Login/Login.tsx"));
 
 
 // withRouter отсутствует в react router 6, поэтому есть такой кастыль
@@ -28,7 +29,13 @@ export function withRouter(Children){
     }
 }
 
-class App extends React.Component {
+type MapPropsType = ReturnType<typeof mapStateToProps>
+type DispatchPropsType = {
+    initializeApp: () => void
+}
+
+
+class App extends React.Component<MapPropsType & DispatchPropsType, any> {
     componentDidMount() {
         this.props.initializeApp();
     }
@@ -45,10 +52,11 @@ class App extends React.Component {
                     <React.Suspense fallback={<Preloader/>}>
                     <Routes>
                         <Route path='/dialogs' element={<DialogsContainer/>}/>
-
-                        <Route path="/profile" element={<ProfileContainer/>}>
-                            <Route path=":userId" element={<ProfileContainer/>}/>
-                        </Route>
+                        <Route path="/profile/:userId" element={<ProfileContainer />} />
+                        <Route path="/profile" element={<ProfileContainer />} />
+                        {/*<Route path="/profile" element={<ProfileContainer/>}>*/}
+                        {/*    <Route path=":userId" element={<ProfileContainer/>}/>*/}
+                        {/*</Route>*/}
 
                         <Route path='/users' element={<UsersContainer/>}/>
 
@@ -61,7 +69,7 @@ class App extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: AppStateType) => ({
     initialized: state.app.initialized
 })
 

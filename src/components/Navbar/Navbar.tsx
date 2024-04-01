@@ -5,7 +5,7 @@ import {NavLink} from "react-router-dom";
 
 const setActiveClass = ({isActive}) => isActive ? s.activeLink : "";
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
     return (
         <nav className={s.nav}>
             <div className={s.item}>

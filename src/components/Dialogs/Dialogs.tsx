@@ -1,11 +1,18 @@
 import React from 'react';
 import s from './Dialogs.module.css';
-import DialogItem from "./DialogItem/Dialogitem";
-import Message from "./Message/Message";
+import DialogItem from "./DialogItem/Dialogitem.tsx";
+import Message from "./Message/Message.tsx";
+import {initialStateType} from "../../redux/dialogs-reducer";
 
 // в React Router Dom V6 нет Redirect, вместо его <Navigate to="/login"/>;
 
-const Dialogs = (props) => {
+type PropsType = {
+    dialogsPage: initialStateType
+    sendMessage: () => void
+    updateNewMessageBody: (body: string) => void
+}
+
+const Dialogs: React.FC<PropsType> = (props) => {
 
     let state = props.dialogsPage;
 

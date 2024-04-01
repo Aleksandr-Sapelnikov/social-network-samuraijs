@@ -1,16 +1,22 @@
 import React from 'react';
 import s from './MyPosts.module.css';
-import Post from './Post/Post';
+import Post from './Post/Post.tsx';
+import {PostType} from "../../../types/types";
 
-
-
-const MyPosts = (props) => {
+type PropsType = {
+    posts: Array<PostType>
+    addPost: () => void
+    updateNewPostText: (string) => void
+    newPostText: string
+}
+//можно обернуть в React.memo
+const MyPosts: React.FC<PropsType> = (props) => {
     let postsElements =
         props.posts.map( p => <Post message={p.message} likesCount={p.likesCount}/>);
 
     let newPostElement = React.createRef();
 
-    let onaddPost = () => {
+    let onAddPost = () => {
         props.addPost();
     }
 
@@ -28,7 +34,7 @@ const MyPosts = (props) => {
                               value={props.newPostText} />
                 </div>
                 <div>
-                    <button onClick={ onaddPost }>Add post</button>
+                    <button onClick={ onAddPost }>Add post</button>
                 </div>
             </div>
             <div className={s.posts}>

@@ -4,8 +4,13 @@ import {useDispatch, useSelector} from "react-redux";
 import {Navigate} from "react-router-dom";
 import {login} from "../../redux/auth-reducer.ts";
 
+type ErrorsType = {
+    email?: string
+    password?: string
+    captcha?: string
+}
 
-const LoginForm = (props) => {
+const LoginForm: React.FC<{}> = () => {
 
     const dispatch = useDispatch()
 
@@ -16,7 +21,7 @@ const LoginForm = (props) => {
         return <Navigate to={"/profile"} />
     }
     const submit = (values, submitProps) => {
-        dispatch(login(values.email, values.password, values.rememberMe, values.captcha, submitProps.setStatus, submitProps.setSubmitting))
+        dispatch<any>(login(values.email, values.password, values.rememberMe, values.captcha, submitProps.setStatus, submitProps.setSubmitting))
 
     }
 
@@ -29,7 +34,7 @@ const LoginForm = (props) => {
                 captcha: null
             }}
             validate={values => {
-                const errors = {};
+                const errors: ErrorsType = {};
                 if (!values.email) {
                     errors.email = 'Required';
                 } else if (

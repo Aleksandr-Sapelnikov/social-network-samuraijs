@@ -1,13 +1,25 @@
 import React from "react";
-import Profile from "./Profile";
+import Profile from "./Profile.tsx";
 import {connect} from "react-redux";
 import {getStatus, getUserProfile, savePhoto, saveProfile, updateStatus} from "../../redux/profile-reducer.ts";
 import {Navigate, useParams} from 'react-router-dom'
 import {compose} from "redux";
+import {AppStateType} from "../../redux/redux-store";
+import {ProfileType} from "../../types/types";
 
+type MapPropsType = ReturnType<typeof mapStateToProps>
+
+type DispatchPropsType = {
+    getUserProfile: (userId: number) => void
+    getStatus: (userId: number) => void
+    updateStatus: (status: string) => void
+    savePhoto: (file: File) => void
+    saveProfile: (profile: ProfileType) => Promise<any>
+    match: {}
+}
 
 // withRouter отсутствует в react router 6, поэтому есть такой кастыль
-export function withRouter(Children){
+export function withRouter(Children: React.ComponentType){
     return(props)=>{
 
         const match  = {params: useParams()};
@@ -16,20 +28,26 @@ export function withRouter(Children){
     }
 }
 
-class ProfileContainer extends React.Component {
+class ProfileContainer extends React.Component<MapPropsType & DispatchPropsType, DispatchPropsType> {
+
     refreshProfile() {
-        let userId = this.props.match.params.userId;
+        let userId: number | null = this.props.match.params.userId;
         if (!userId) {
-            if (!userId) {
-                userId = this.props.authorizedUserId;
-                if (userId) {
-                    // this.props.history.push("/login");
-                    this.props.getUserProfile(userId)
-                    this.props.getStatus(userId)
-                    //Делаю запросы, только если есть авторизация, иначе ошибка 400 от сервера, т.к. userId = null
-                }
-            }
+            userId = this.props.authorizedUserId;
         }
+
+        if (!userId) {
+            console.error("ID should exists in URI params or in state ('authorizedUserId')");
+        } else {
+            this.props.getUserProfile(userId)
+            this.props.getStatus(userId)
+        }
+        // if (userId) {
+        //     // this.props.history.push("/login");
+        //     this.props.getUserProfile(userId)
+        //     this.props.getStatus(userId)
+        //     //Делаю запросы, только если есть авторизация, иначе ошибка 400 от сервера, т.к. userId = null
+        // }
     }
 
     componentDidMount() {
@@ -42,7 +60,6 @@ class ProfileContainer extends React.Component {
             this.refreshProfile();
         }
     }
-
 
     render() {
         if (!this.props.authorizedUserId) {
@@ -63,7 +80,7 @@ class ProfileContainer extends React.Component {
     }
 }
 
-let mapStateToProps = (state) => {
+let mapStateToProps = (state: AppStateType) => {
     return {
         profile: state.profilePage.profile,
         status: state.profilePage.status,
@@ -76,4 +93,4 @@ let mapStateToProps = (state) => {
 export default compose(
     connect(mapStateToProps, {getUserProfile, getStatus, updateStatus, savePhoto, saveProfile}),
     withRouter
-)(ProfileContainer);
+)(ProfileContainer) as React.ComponentType;

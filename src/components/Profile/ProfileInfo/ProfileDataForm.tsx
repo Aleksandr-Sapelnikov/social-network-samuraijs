@@ -2,8 +2,13 @@ import React from "react";
 import s from './ProfileInfo.module.css';
 
 import {ErrorMessage, Field, Form, Formik} from "formik";
+import {ProfileType} from "../../../types/types";
 
-const ProfileDataForm = ({handleSubmit, profile, error}) => {
+type PropsType = {
+    profile: ProfileType
+}
+
+const ProfileDataForm: React.FC<PropsType> = ({handleSubmit, profile, error}) => {
 
     return (
         <Formik

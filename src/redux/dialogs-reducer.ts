@@ -1,5 +1,5 @@
-const UPDATE_NEW_MESSAGE_BODY = 'UPDATE_NEW_MESSAGE_BODY';
-const SEND_MESSAGE = 'SEND_MESSAGE';
+import {InferActionsTypes} from "./redux-store";
+
 
 type dialogType = {
     id: number,
@@ -29,16 +29,16 @@ let initialState = {
 };
 
 export type initialStateType = typeof initialState
+type ActionsType = InferActionsTypes<typeof actions>
 
-const dialogsReducer = (state = initialState, action): initialStateType => {
-
+const dialogsReducer = (state = initialState, action: ActionsType): initialStateType => {
     switch (action.type) {
-        case UPDATE_NEW_MESSAGE_BODY:
+        case 'SN/DIALOGS/UPDATE_NEW_MESSAGE_BODY':
             return  {
                 ...state,
                 newMessageBody: action.body
             };
-        case SEND_MESSAGE:
+        case 'SN/DIALOGS/SEND_MESSAGE':
             let body = state.newMessageBody;
             return {
                 ...state,
@@ -49,15 +49,10 @@ const dialogsReducer = (state = initialState, action): initialStateType => {
             return state;
     }
 }
-type sendMessageCreatorActionType = {
-    type: typeof SEND_MESSAGE
+
+export const actions = {
+    sendMessage: () => ({type: 'SN/DIALOGS/SEND_MESSAGE'} as const),
+    updateNewMessageBody: (body) => ({ type: 'SN/DIALOGS/UPDATE_NEW_MESSAGE_BODY', body: body } as const)
 }
-export const sendMessageCreator = (): sendMessageCreatorActionType => ({type: SEND_MESSAGE})
-type updateNewMessageBodyCreatorActionType = {
-    type: typeof UPDATE_NEW_MESSAGE_BODY,
-    body: string
-}
-export const updateNewMessageBodyCreator = (body): updateNewMessageBodyCreatorActionType =>
-    ({ type: UPDATE_NEW_MESSAGE_BODY, body: body })
 
 export default dialogsReducer;

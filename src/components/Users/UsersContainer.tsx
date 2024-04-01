@@ -6,7 +6,7 @@ import {
     unfollow
 } from "../../redux/users-reducer.ts";
 import React from "react";
-import Preloader from "../common/Preloader/Preloader";
+import Preloader from "../common/Preloader/Preloader.tsx";
 import {UserType} from "../../types/types";
 import {AppStateType} from "../../redux/redux-store";
 
@@ -97,4 +97,4 @@ let mapStateToProps = (state: AppStateType) => {
 // то connect оборачивает ваши AC в функцию-обертку () => store.dispatch(AC) и передаёт в props компонента."
 // TStateProps = {}, TDispatchProps = {}, TOwnProps = {}, State = DefaultRootState
 export default connect<MapStatePropsType, MapDispatchPropsType, OwnPropsType, AppStateType>(mapStateToProps,
-    {follow, unfollow, getUsers: requestUsers})(UsersContainer)
+    {follow, unfollow, getUsers: requestUsers})(UsersContainer) as React.ComponentType
