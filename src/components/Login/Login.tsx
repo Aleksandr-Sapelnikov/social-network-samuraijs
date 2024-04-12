@@ -3,6 +3,7 @@ import {Formik, Form, Field, ErrorMessage} from 'formik';
 import {useDispatch, useSelector} from "react-redux";
 import {Navigate} from "react-router-dom";
 import {login} from "../../redux/auth-reducer.ts";
+import {AppDispatch} from "../../redux/redux-store";
 
 type ErrorsType = {
     email?: string
@@ -10,9 +11,10 @@ type ErrorsType = {
     captcha?: string
 }
 
+
 const LoginForm: React.FC<{}> = () => {
 
-    const dispatch = useDispatch()
+    const dispatch: AppDispatch = useDispatch()
 
     const isAuth = useSelector((state) => state.auth.isAuth)
     const captchaUrl = useSelector((state) => state.auth.captchaUrl)
@@ -21,7 +23,7 @@ const LoginForm: React.FC<{}> = () => {
         return <Navigate to={"/profile"} />
     }
     const submit = (values, submitProps) => {
-        dispatch<any>(login(values.email, values.password, values.rememberMe, values.captcha, submitProps.setStatus, submitProps.setSubmitting))
+        dispatch(login(values.email, values.password, values.rememberMe, values.captcha, submitProps.setStatus, submitProps.setSubmitting))
 
     }
 

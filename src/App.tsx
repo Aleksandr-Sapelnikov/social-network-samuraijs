@@ -13,9 +13,10 @@ import {compose} from "redux";
 import {connect} from "react-redux";
 import {initializeApp} from "./redux/app-reducer.ts";
 import {AppStateType} from "./redux/redux-store";
+import {UsersPage} from "./components/Users/UsersContainer.tsx";
 
 const DialogsContainer = lazy(() => import("./components/Dialogs/DialogsContainer.tsx"));
-const UsersContainer = lazy(() => import("./components/Users/UsersContainer.tsx"));
+// const UsersPage = lazy(() => import("./components/Users/UsersContainer.tsx"));
 // const ProfileContainer = lazy(() => import("./components/Profile/ProfileContainer.tsx"));
 const LoginPage = lazy(() => import("./components/Login/Login.tsx"));
 
@@ -54,13 +55,14 @@ class App extends React.Component<MapPropsType & DispatchPropsType, any> {
                         <Route path='/dialogs' element={<DialogsContainer/>}/>
                         <Route path="/profile/:userId" element={<ProfileContainer />} />
                         <Route path="/profile" element={<ProfileContainer />} />
+                        <Route path="/" element={<ProfileContainer />} />
                         {/*<Route path="/profile" element={<ProfileContainer/>}>*/}
                         {/*    <Route path=":userId" element={<ProfileContainer/>}/>*/}
                         {/*</Route>*/}
 
-                        <Route path='/users' element={<UsersContainer/>}/>
-
+                        <Route path='/users' element={<UsersPage pageTitle={"Самураи"}/>}/>
                         <Route path='/login' element={<LoginPage/>}/>
+                        <Route path='*' element={<div>404 NOT FOUND</div>}/>
                     </Routes>
                     </React.Suspense>
                 </div>
