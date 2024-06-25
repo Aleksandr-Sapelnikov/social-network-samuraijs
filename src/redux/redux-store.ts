@@ -1,4 +1,4 @@
-import {Action, AnyAction, applyMiddleware, combineReducers, compose, createStore} from "redux";
+import {Action, applyMiddleware, combineReducers, compose, createStore} from "redux";
 import profileReducer from "./profile-reducer.ts";
 import dialogsReducer from "./dialogs-reducer.ts";
 import sidebarReducer from "./sidebar-reducer.ts";
@@ -6,6 +6,7 @@ import usersReducer from "./users-reducer.ts";
 import authReducer from "./auth-reducer.ts";
 import {thunk, ThunkAction, ThunkDispatch} from "redux-thunk"
 import appReducer from "./app-reducer.ts";
+import chatReducer from "./chat-reducer.ts";
 
 let rootReducer = combineReducers({
     profilePage: profileReducer,
@@ -13,7 +14,8 @@ let rootReducer = combineReducers({
     sidebar: sidebarReducer,
     usersPage: usersReducer,
     auth: authReducer,
-    app: appReducer
+    app: appReducer,
+    chat: chatReducer
 });
 
 type RootReducerType = typeof rootReducer; // (globalstate: AppStateType) => AppStateType
